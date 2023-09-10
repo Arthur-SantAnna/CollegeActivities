@@ -1,5 +1,11 @@
 #include "graph.h"
 
+/*  Grupo:
+    Arthur Sant'Anna
+    Bernardo Serravalle Resende
+    Gabriel Souza Dunkel
+ */
+
 int main(void){
     printf("Begin\n");
 
