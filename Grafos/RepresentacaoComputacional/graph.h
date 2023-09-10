@@ -170,7 +170,20 @@ void insertNode(Graph *graph, char *insert, Node *currentNode){
 }
 
 void printGraph(Graph *graph){
-    
+    printf("Total number of edges: %d\n\n", graph->numEdges);
+    for(int i = 0; i < graph->numNodes; i++){
+        printf("teste dentro do for\n");
+        Node *tempNode = &graph->root[i];
+        Adj *tempAdj = tempNode->adjList;
+        printf("Label: %s\n", tempNode->label);
+        while(tempAdj->nextNode != NULL){
+            printf("%s is adjacenty to: %s\n", graph->root[i].label, tempAdj->nextNode->node->label);
+            printf("Degree: %d\n", tempNode->degree);
+            printf("Edges number: %d\n", tempNode->edges);
+            tempAdj = tempAdj->nextNode;
+        }
+        printf("\n");
+    }
 }
 
 #endif

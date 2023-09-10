@@ -17,6 +17,8 @@ int main(void){
 
     startGraph(&file, &graph);
 
+    printGraph(&graph);
+
     printf("End\n");
 
     fclose(file);
