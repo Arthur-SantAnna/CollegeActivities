@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
+#include <stdbool.h>
 
 //the following structs are part of the structure of a graph 
 //struct to define a list of adjacenty nodes
@@ -35,16 +35,23 @@ void settingAdjList(FILE *arq, Graph *graph);
 
 void insertNode(Graph *graph, char *insert, Node *currentNode);
 
-void *startGraph(FILE **file, Graph *graph){
+void *startGraph(FILE **file, Graph *graph){ // function to start a Graph
 
     graph->numEdges = 0;
     graph->numNodes = 0;
-    graph->root = NULL;
+    graph->root = NULL;     
 
     if(!file){
         printf("Error reading file.\n");
         exit(0);
     }
+
+    /* 
+    
+        Read file.    
+        Make a String without spaces of the first line and count them to set numNodes. 
+    
+    */
 
     char line[100];
     char *entry;
@@ -53,13 +60,10 @@ void *startGraph(FILE **file, Graph *graph){
     int lineSize = 0;
     int i = 0;
 
-    //printf("Entry: %s\n", entry);
-
     if(entry == NULL){
         printf("Error reading line.\n");
     }
 
-    //remove spaces of first line and count node number
     lineSize = strlen(line);
     noSpaceLine = (char *)malloc(lineSize * sizeof(char));
     int j = 0;
@@ -69,17 +73,16 @@ void *startGraph(FILE **file, Graph *graph){
         }
     }
     noSpaceLine[j] = '\0';
-
-    printf("Line without spaces: %s\n", noSpaceLine);
     graph->numNodes = strlen(noSpaceLine);
-    printf("Node number: %d\n", graph->numNodes);
-
-    //Count numNodes and get labels  ^^^
-
-    //Setting labels vvv
     
-    graph->root = (Node *)malloc(graph->numNodes * sizeof(Node));
 
+    /* 
+
+        Labels in the right place, using the string without spaces.
+
+    */
+
+    graph->root = (Node *)malloc(graph->numNodes * sizeof(Node));
     graph->root = &graph->root[0];
 
     for(int i = 0; i < (graph->numNodes); i++){
@@ -94,6 +97,10 @@ void *startGraph(FILE **file, Graph *graph){
 
 void settingAdjList(FILE *file, Graph *graph){
     
+    /* 
+        Fuction to set the Adjecent List.
+    */
+
     char line[100];
     char *entry;
     char *noSpaceLine = NULL;
@@ -112,11 +119,11 @@ void settingAdjList(FILE *file, Graph *graph){
         noSpaceLine[j] = '\0';
         //printf("Linha: %s\n", noSpaceLine);
         if(entry != NULL){
-            insertNode(graph, noSpaceLine, &graph->root[k++]);
+            insertNode(graph, noSpaceLine, &graph->root[k++]); //Actully setting the Adjecent List.
         }
         j = 0;
-        entry = NULL;
-        noSpaceLine = NULL;   
+        free(entry);
+        free(noSpaceLine);
     }
     graph->numEdges /= 2;
     //printf("True Graph edges: %d\n", graph->numEdges);
@@ -153,6 +160,7 @@ void insertNode(Graph *graph, char *insert, Node *currentNode){
                 currentNode->degree++;
                 graph->numEdges++;
             }
+            auxAdj->nextNode = NULL;
         }
 
         /* printf("Node atual: %c\n", graph->root[i].label);
@@ -168,10 +176,8 @@ void insertNode(Graph *graph, char *insert, Node *currentNode){
 }
 
 void printGraph(Graph *graph){
-    int i = 0;
     printf("Total number of edges: %d\n\n", graph->numEdges);
-    for(i = 0; i < graph->numNodes; i++){
-        printf("teste dentro do for\n");
+    for(int i = 0; i < graph->numNodes; i++){ 
         Node *tempNode = &graph->root[i];
         Adj *tempAdj = tempNode->adjList;
         printf("Label: %c\n", tempNode->label);
@@ -183,6 +189,91 @@ void printGraph(Graph *graph){
         }
         printf("\n");
     }
+}
+
+void swap(int* xp, int* yp)
+{
+    int temp = *xp;
+    *xp = *yp;
+    *yp = temp;
+}
+  
+// An optimized version of Bubble Sort
+void bubbleSort(int arr[], int n)
+{
+    int i, j;
+    bool swapped;
+    for (i = 0; i < n - 1; i++) {
+        swapped = false;
+        for (j = 0; j < n - i - 1; j++) {
+            if (arr[j] > arr[j + 1]) {
+                swap(&arr[j], &arr[j + 1]);
+                swapped = true;
+            }
+        }
+  
+        // If no two elements were swapped by inner loop,
+        // then break
+        if (swapped == false)
+            break;
+    }
+}
+
+int verifyIsomorfism(Graph *graph1, Graph *graph2){
+
+    if(!(graph1->numNodes == graph2->numNodes)) return 0;
+    if(!(graph1->numEdges == graph2->numEdges)) return 0;
+
+    int vectorDegree1[graph1->numNodes];
+    memset(vectorDegree1, 0, sizeof(vectorDegree1));
+    int vectorDegree2[graph2->numNodes];
+    memset(vectorDegree2, 0, sizeof(vectorDegree2));
+    int k;
+
+    for(k = 0; k < graph1->numNodes; k++){
+        vectorDegree1[k] = graph1->root[k].degree;
+    }
+    bubbleSort(vectorDegree1, graph1->numNodes);
+    
+    for(k = 0; k < graph2->numNodes; k++){
+        vectorDegree2[k] = graph2->root[k].degree;
+    }
+    bubbleSort(vectorDegree2, graph2->numNodes);
+
+    for(k = 0; k < graph1->numNodes; k++){
+        printf("Ordem foda1: %d\n", vectorDegree1[k]);
+    }
+    for(k = 0; k < graph2->numNodes; k++){
+        printf("Ordem foda2: %d\n", vectorDegree2[k]);
+    }
+    
+    for(k = 0; k < graph1->numNodes; k++){
+        if(vectorDegree1[k] != vectorDegree2[k]) return 0;
+    }
+
+
+    int vectorNgh1[graph1->numNodes];
+    memset(vectorNgh1, 0, sizeof(vectorNgh1));
+    int vectorNgh2[graph2->numNodes];
+    memset(vectorNgh2, 0, sizeof(vectorNgh2));
+
+    int i = 0, bigDegree1 = 0, aux1 = 0, bigDegree2, aux2;
+
+    for(i = 0; i < graph1->numNodes; i++){
+        if(graph1->root[i].degree > aux1){
+            aux1 = graph1->root[i].degree;
+            bigDegree1 = i;
+        }
+    }
+
+    for(i = 0; i < graph2->numNodes; i++){
+        if(graph2->root[i].degree > aux2){
+            aux2 = graph2->root[i].degree;
+            bigDegree2 = i;
+        }
+    }
+
+    return 1;
 }
 
 #endif
