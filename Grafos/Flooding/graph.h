@@ -70,10 +70,12 @@ void *startGraph(FILE **file, Graph *graph){
     }
     noSpaceLine[j] = '\0';
 
-    printf("Line without spaces: %s\n", noSpaceLine);
+    //printf("Line without spaces: %s\n", noSpaceLine);
     graph->numNodes = strlen(noSpaceLine);
-    printf("Node number: %d\n", graph->numNodes);
+    printf("Node number: %d\n\n", graph->numNodes);
 
+    printf("Adjacency Matrix:\n\n");
+    printf("%s\n", noSpaceLine);
     //Count numNodes and get labels  ^^^
 
     //Setting labels vvv
@@ -112,9 +114,10 @@ void settingAdjList(FILE *file, Graph *graph){
         }
         noSpaceLine[j] = '\0';
         if(noSpaceLine != NULL){
-        printf("Linha: %s\n", noSpaceLine);
+            //printf("Linha: %s\n", noSpaceLine);
             insertNode(graph, noSpaceLine, &graph->root[k++]);
         }
+        printf("%s\n", noSpaceLine);
         j = 0;
         entry = NULL;
         noSpaceLine = NULL;   
