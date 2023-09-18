@@ -10,19 +10,32 @@
 
 int main(){
     printf("\nBegin\n");
-    FILE *file;
+    FILE *file1;
+    FILE *file2;
 
-    file = fopen("file1.txt", "rt");
+    file1 = fopen("file1.txt", "rt");
 
-    Graph graph;
+    Graph graph1;
 
-    startGraph(&file, &graph);
+    startGraph(&file1, &graph1);
 
     //printGraph(&graph);
 
-    printf("\nNumber of related components: %d\n", countConnectedComponents(&graph));
+    printf("\nNumber of related components: %d\n\n", countConnectedComponents(&graph1));
 
-    fclose(file);
+    fclose(file1);
+
+    file2 = fopen("file2.txt", "rt");
+
+    Graph graph2;
+
+    startGraph(&file2, &graph2);
+
+    //printGraph(&graph);
+
+    printf("\nNumber of related components: %d\n", countConnectedComponents(&graph2));
+
+    fclose(file2);
 
     printf("\nEnd\n");
     return 0;
